@@ -16,9 +16,7 @@ pipeline {
                 '''
             }
         }
-
-          
-        }
+    
         stage('ECS') {
             
             agent {
@@ -43,8 +41,9 @@ pipeline {
 
                 '''
 
-}
+
             }
         }
     }
+}
 }

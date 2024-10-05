@@ -19,10 +19,12 @@ pipeline {
             
             sh '''
                 
-                aws ecs register-task-definition --cli-input-json file://AWS/task-defination-prod.json >> output-file.json
+                aws ecs register-task-definition --cli-input-json file://AWS/task-defination-prod.json > output-file.json
                 yum update -y
                 yum install jq -y
-                jq '.taskDefinition.taskDefinitionArn' output-file.json
+                DEFINATION_NAME=$(jq '.taskDefinition.taskDefinitionArn' output-file.json)
+                VERSION=$(awk -f ':' '{print $NF}')
+                echo "$VERSION"
                 '''
 
 }

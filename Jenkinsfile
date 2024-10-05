@@ -18,8 +18,11 @@ pipeline {
             withCredentials([usernamePassword(credentialsId: 'AWS', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
             
             sh '''
-
-                aws ecs register-task-definition --cli-input-json file://AWS/task-defination-prod.json
+                
+                aws ecs register-task-definition --cli-input-json file://AWS/task-defination-prod.json >> output-file.json
+                apt update -y
+                apt install jq -y
+                jq '.taskDefinitionArn' output-file.json
                 '''
 
 }

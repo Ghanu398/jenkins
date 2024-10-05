@@ -2,14 +2,29 @@ pipeline {
     agent any
     environment {
        AWS_DEFAULT_REGION = 'us-east-1'
+       AWS_SERVICE = 'learn-docker'
+       AWS_CLUSTER = 'test-cluster'
+       AWS_TD = 'test-task-defination'
+
     }
     stages {
+
+        stage("image build"){
+            steps {
+                sh '''
+                docker image build -t 'aws-cli-manual' .
+                '''
+            }
+        }
+
+          
+        }
         stage('ECS') {
             
             agent {
                 docker {
-                    image 'amazon/aws-cli'
-                    args "-u root --entrypoint=''"
+                    image 'aws-cli-manual'
+                    //args "-u root --entrypoint=''"
                     reuseNode true
                 }
             }
@@ -21,10 +36,11 @@ pipeline {
                 
                 aws ecs register-task-definition --cli-input-json file://AWS/task-defination-prod.json > output-file.json
                 #update -y
-                yum install jq -y
+                #yum install jq -y
                 VERSION=$(jq '.taskDefinition.taskDefinitionArn' output-file.json | awk -F ':' '{print $NF}' | awk -F '"' '{print $1}')
-                aws ecs update-service --cluster test-cluster --service learn-docker --task-definition test-task-defination:$VERSION
-                echo "$VERSION"
+                aws ecs update-service --cluster $AWS_CLUSTER --service $AWS_SERVICE --task-definition $AWS_TD:$VERSION
+                aws ecs wait services-stable --cluster $AWS_CLUSTER --services $AWS_SERVICE
+
                 '''
 
 }

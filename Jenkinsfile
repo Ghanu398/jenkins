@@ -23,7 +23,7 @@ pipeline {
                 yum update -y
                 yum install jq -y
                 DEFINATION_NAME=$(jq '.taskDefinition.taskDefinitionArn' output-file.json)
-                VERSION=$(awk -f ':' '{print $NF}')
+                VERSION=$(awk -f ':' '{print $NF}' $DEFINATION_NAME)
                 echo "$VERSION"
                 '''
 

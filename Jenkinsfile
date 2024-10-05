@@ -20,8 +20,8 @@ pipeline {
             sh '''
                 
                 aws ecs register-task-definition --cli-input-json file://AWS/task-defination-prod.json >> output-file.json
-                apt update -y
-                apt install jq -y
+                yum update -y
+                yum install jq -y
                 jq '.taskDefinitionArn' output-file.json
                 '''
 

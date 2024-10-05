@@ -23,7 +23,7 @@ pipeline {
                 #update -y
                 yum install jq -y
                 VERSION=$(jq '.taskDefinition.taskDefinitionArn' output-file.json | awk -F ':' '{print $NF}' | awk -F '"' '{print $1}')
-                
+                aws ecs update-service --cluster test-cluster --service learn-docker --task-definition test-task-defination:$VERSION
                 echo "$VERSION"
                 '''
 
